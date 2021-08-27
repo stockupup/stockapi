@@ -24,6 +24,7 @@ scale up 加仓
   "stock_code": "002415",
   "stock_name": "海康威视",
   "price": 53.27,
+  "currency": "CNY",
   "trans": 100
 }
 ```
@@ -42,6 +43,7 @@ reduce 减仓
   "stock_id": 111101,
   "stock_code": "002415",
   "stock_name": "海康威视",
+  "currency": "CNY",
   "price": 53.27,
   "trans": 100
 }
@@ -65,12 +67,24 @@ reduce 减仓
     {
       "holder_id": 1,
       "holder_name": "豆豆",
-      "stock_id": 111101,
-      "stock_code": "002415",
-      "stock_name": "海康威视",
-      "price": 53.27,
-      "cost": 80.01,
-      "trans": 400
+      "profit": -1000,
+      "market_value": 3000,
+      "currency": "CNY",
+      "stocks": [
+        {
+          "holder_id": 1,
+          "holder_name": "豆豆",
+          "stock_id": 111101,
+          "stock_code": "002415",
+          "stock_name": "海康威视",
+          "market_value": 3000,
+          "profit": -1000,
+          "currency": "CNY",
+          "price": 53.27,
+          "cost": 80.01,
+          "trans": 400
+        }
+      ]
     }
   ]
 }
