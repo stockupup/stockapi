@@ -9,45 +9,27 @@ API文档
 * 数据格式: JSON
 * 国家化参数lang：放在url参数中, 或者header中, 否则默认出中文
 
-scale up 加仓
+update 更新持仓数据
 --------------------------
 
 * 请求方式: post
-* 接口路径: ```/api/v1/stock/scale```
+* 接口路径: ```/api/v1/stock/update```
 * 请求参数:
 
 ```json
 {
   "holder_id": 1,
+  "timestamp": 1630156207,  // 10位秒级时间戳
   "holder_name": "豆豆",
   "stock_id": 111101,
   "stock_code": "002415",
   "stock_name": "海康威视",
-  "price": 53.27,
+  "cost": 53.27,  // 0 清仓
   "currency": "CNY",
-  "trans": 100
+  "trans": 100  //为0 时就是清仓
 }
 ```
 
-reduce 减仓
---------------------------
-
-* 请求方式: post
-* 接口路径: ```/api/v1/stock/reduce```
-* 请求参数:
-
-```json
-{
-  "holder_id": 1,
-  "holder_name": "豆豆",
-  "stock_id": 111101,
-  "stock_code": "002415",
-  "stock_name": "海康威视",
-  "currency": "CNY",
-  "price": 53.27,
-  "trans": 100
-}
-```
 
 持仓情况
 --------------------------
@@ -73,16 +55,23 @@ reduce 减仓
       "stocks": [
         {
           "holder_id": 1,
-          "holder_name": "豆豆",
           "stock_id": 111101,
           "stock_code": "002415",
           "stock_name": "海康威视",
-          "market_value": 3000,
           "profit": -1000,
           "currency": "CNY",
-          "price": 53.27,
           "cost": 80.01,
           "trans": 400
+        },
+        {
+          "holder_id": 1,
+          "stock_id": 111102,
+          "stock_code": "002415",
+          "stock_name": "五粮液",
+          "profit": -1000, // 清仓收益
+          "currency": "CNY",
+          "cost": 0,
+          "trans": 0
         }
       ]
     }
