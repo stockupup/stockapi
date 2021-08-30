@@ -19,10 +19,7 @@ update 更新持仓数据
 ```json
 {
   "holder_id": 1,
-  "timestamp": 1630156207,
-  // 10位秒级时间戳
   "holder_name": "豆豆",
-  "stock_id": 111101,
   "stock_code": "002415",
   "stock_name": "海康威视",
   "cost": 53.27,
@@ -33,8 +30,7 @@ update 更新持仓数据
 }
 ```
 
-
- clearance 清仓
+clearance 清仓
 --------------------------
 
 * 请求方式: post
@@ -44,16 +40,75 @@ update 更新持仓数据
 ```json
 {
   "holder_id": 1,
-  "timestamp": 1630156207,
-  // 10位秒级时间戳
   "holder_name": "豆豆",
   "stock_id": 111101,
   "stock_code": "002415",
   "stock_name": "海康威视",
-  "cost": 53.27,
-  "currency": "CNY",
-  "trans": 100
-  //为0 时就是清仓
+  "profit": 53.27
+}
+```
+
+新增 holder
+--------------------------
+
+* 请求方式: post
+* 接口路径: ```/api/v1/holder/add```
+* 请求参数:
+
+```json
+{
+  "holder_name": "豆豆"
+}
+```
+
+* response
+
+```json
+{
+  "data": [
+    {
+      "_id": "hd_83682a00",
+      "create_time": "2021-08-30 12:23:56",
+      "create_ts": 1630297436,
+      "holder_id": "hd_83682a00",
+      "holder_name": "豆豆"
+    }
+  ],
+  "msg": "ok",
+  "rid": "612c5d5cb59112c3836829fe"
+}
+```
+
+
+查询 holder
+--------------------------
+
+* 请求方式: GET
+* 接口路径: ```/api/v1/holder/query```
+* 请求参数:
+
+* response
+
+```json
+{
+    "data": [
+        {
+            "_id": "hd_83682a06",
+            "create_time": "2021-08-30 12:28:32",
+            "create_ts": 1630297712,
+            "holder_id": "hd_83682a06",
+            "holder_name": "豆豆"
+        },
+        {
+            "_id": "hd_83682a0a",
+            "create_time": "2021-08-30 12:28:44",
+            "create_ts": 1630297724,
+            "holder_id": "hd_83682a0a",
+            "holder_name": "强哥"
+        }
+    ],
+    "msg": "ok",
+    "rid": "612c5e87b59112c383682a0c"
 }
 ```
 
@@ -78,7 +133,7 @@ update 更新持仓数据
       "profit": -2000,
       "yesterday_profit": -12000,
       "clearance_profit": 0,
-       "total_profit": -2000,
+      "total_profit": -2000,
       "currency": "CNY",
       "stocks": [
         {
