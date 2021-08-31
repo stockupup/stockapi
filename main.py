@@ -24,7 +24,6 @@ def stock_update():
     params = request.json
     holder_id = params['holder_id']
     holder_name = params['holder_name']
-    timestamp = params['timestamp']
     stock_code = str(params['stock_code'])
     stock_name = params['stock_name']
     cost = float(params['cost'])
