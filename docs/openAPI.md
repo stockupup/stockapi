@@ -123,49 +123,77 @@ clearance 清仓
 
 ```json
 {
-  "code": 1,
-  "msg": "ok",
-  "total_count": 1,
-  "data": [
-    {
-      "holder_id": 1,
-      "holder_name": "豆豆",
-      "profit": -2000,
-      "yesterday_profit": -12000,
-      "clearance_profit": 0,
-      "total_profit": -2000,
-      "currency": "CNY",
-      "stocks": [
+    "data": [
         {
-          "date": 20210828,
-          "holder_id": 1,
-          "stock_id": 111101,
-          "stock_code": "002415",
-          "stock_name": "海康威视",
-          "profit": -1000,
-          "yesterday_profit": -6000,
-          "clearance_profit": 0,
-          "total_profit": -1000,
-          "currency": "CNY",
-          "cost": 80.01,
-          "trans": 400
+            "clearance_profit": 0,
+            "currency": "CNY",
+            "holder_id": "hd_83682a06",
+            "holder_name": "豆豆",
+            "profit": 0,
+            "stocks": [
+                {
+                    "_id": "612d85502fed8186d9e62329",
+                    "clearance_profit": 0,
+                    "cost": 54.461,
+                    "create_dt": "20210831",
+                    "create_time": "2021-08-31 09:26:40",
+                    "create_ts": 1630373200,
+                    "currency": "CNY",
+                    "date": "20210831",
+                    "holder_id": "hd_83682a06",
+                    "holder_name": "豆豆",
+                    "modify_time": "2021-08-31 09:26:40",
+                    "modify_ts": 1630373200,
+                    "profit": 0,
+                    "status": 1,
+                    "stock_code": "SZ002415",
+                    "stock_id": "so_6a74097d",
+                    "stock_name": "海康威视",
+                    "total_profit": 0,
+                    "trans": 500,
+                    "yd_cost": 0,
+                    "yesterday_profit": 0
+                },
+                {
+                    "_id": "612d85542fed8186d9e6232d",
+                    "clearance_profit": 0,
+                    "cost": 54.461,
+                    "create_dt": "20210831",
+                    "create_time": "2021-08-31 09:26:45",
+                    "create_ts": 1630373205,
+                    "currency": "CNY",
+                    "date": "20210831",
+                    "holder_id": "hd_83682a06",
+                    "holder_name": "豆豆",
+                    "modify_time": "2021-08-31 09:26:45",
+                    "modify_ts": 1630373205,
+                    "profit": 0,
+                    "status": 1,
+                    "stock_code": "SH0600711",
+                    "stock_id": "so_868fa29e",
+                    "stock_name": "盛屯矿业",
+                    "total_profit": 0,
+                    "trans": 500,
+                    "yd_cost": 0,
+                    "yesterday_profit": 0
+                }
+            ],
+            "total_profit": 0,
+            "yesterday_profit": 0
         },
         {
-          "date": 20210828,
-          "holder_id": 1,
-          "stock_id": 111102,
-          "stock_code": "002415",
-          "stock_name": "五粮液",
-          "profit": 0,
-          "yesterday_profit": -200,
-          "clearance_profit": -20000,
-          "total_profit": -1000,
-          "currency": "CNY",
-          "cost": 0,
-          "trans": 0
+            "clearance_profit": 0,
+            "currency": "CNY",
+            "holder_id": "hd_83682a0a",
+            "holder_name": "强哥",
+            "profit": 0,
+            "stocks": [],
+            "total_profit": 0,
+            "yesterday_profit": 0
         }
-      ]
-    }
-  ]
+    ],
+    "msg": "ok",
+    "rid": "612d85592fed8186d9e6232e",
+    "total_count": 2
 }
 ```

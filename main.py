@@ -5,7 +5,9 @@
 #
 """
 import hashlib
+import re
 
+import requests
 from flask import Flask, jsonify, request
 from bson.objectid import ObjectId
 import datetime
@@ -31,7 +33,8 @@ def stock_update():
     h_stock_id = gen_id("so_", str(holder_id) + stock_code)
     create_stock_history(holder_id, stock_code, h_stock_id, currency)
     update_stock(holder_id, holder_name, stock_code, h_stock_id, stock_name, cost, currency, trans)
-    return jsonify({'msg': "ok", "rid": req_id, "data": []})
+    rets = []
+    return jsonify({'msg': "ok", "rid": req_id, "total_count": len(rets), "data": rets})
 
 
 def md5_encrypt(text):
@@ -59,7 +62,7 @@ def gen_id(pix, unique):
     return cid
 
 
-def query_holder(holder_id):
+def query_holder(holder_id=None):
     client = get_mongo_client()
     db = client[MONGO_DATABASE][COLLECTION_HOLDER]
     query_filer = {}
@@ -110,6 +113,52 @@ def create_stock_history(holder_id, stock_code, stock_id, currency):
     client.close()
 
 
+def get_yd_cost(stock_code):
+    url = "https://hq.sinajs.cn/?list={}".format(stock_code.lower())
+    resp = requests.get(url)
+    rets = re.findall(r'"([^"]*)"', resp.text)
+    ret = rets[0]
+    stock_info = ret.split(',')
+    if len(stock_info) <= 30:
+        return 0
+    stock_dd = int(stock_info[30].replace('-', ''))
+    now_dd = date_dt()
+    if stock_dd <= int(now_dd):
+        return format(stock_info[2])
+    else:
+        return 0
+
+
+def query_stock_by_holder(holder):
+    client = get_mongo_client()
+    stock_cc = client[MONGO_DATABASE][COLLECTION_STOCK_MARKET]
+    query_ft = {"holder_id": holder["holder_id"], "status": 1}
+    stock = stock_cc.find(query_ft)
+    yesterday_profit = 0
+    clearance_profit = 0
+    total_profit = 0
+    currency = "CNY"
+    profit = 0
+    stocks = []
+    for sk in stock:
+        profit += sk['profit']
+        total_profit += sk['total_profit']
+        yesterday_profit += sk['yesterday_profit']
+        clearance_profit += sk['clearance_profit']
+        currency = sk['currency']
+        stocks.append(sk)
+    return {
+        "holder_id": holder["holder_id"],
+        "holder_name": holder["holder_name"],
+        "profit": profit,
+        "yesterday_profit": yesterday_profit,
+        "clearance_profit": clearance_profit,
+        "total_profit": total_profit,
+        "currency": currency,
+        "stocks": stocks
+    }
+
+
 def update_stock(holder_id, holder_name, stock_code, stock_id, stock_name, cost, currency, trans):
     client = get_mongo_client()
     stock_cc = client[MONGO_DATABASE][COLLECTION_STOCK_MARKET]
@@ -117,7 +166,9 @@ def update_stock(holder_id, holder_name, stock_code, stock_id, stock_name, cost,
     stock = stock_cc.find_one(st_filter)
     if not stock:
         new_stock_market = {
+            "_id": generate_id(),
             "date": date_dt(),
+            "status": 1,
             "holder_id": holder_id,
             "holder_name": holder_name,
             "stock_id": stock_id,
@@ -129,6 +180,7 @@ def update_stock(holder_id, holder_name, stock_code, stock_id, stock_name, cost,
             "total_profit": 0,
             "currency": currency,
             "cost": cost,
+            "yd_cost": get_yd_cost(stock_code),
             "trans": trans,
             "create_dt": date_dt(),
             "create_ts": date_timestamp(),
@@ -140,6 +192,7 @@ def update_stock(holder_id, holder_name, stock_code, stock_id, stock_name, cost,
         return
     update_info = {
         "cost": cost,
+        "yd_cost": get_yd_cost(stock_code),
         "trans": trans,
         "modify_ts": date_timestamp(),
         "modify_time": date_time()
@@ -150,13 +203,24 @@ def update_stock(holder_id, holder_name, stock_code, stock_id, stock_name, cost,
 @app.route('/api/v1/stock/clearance', methods=["POST"])
 def stock_clearance():
     req_id = generate_id()
-    return jsonify({'msg': "ok", "rid": req_id, "data": []})
+    rets = []
+    return jsonify({'msg': "ok", "rid": req_id, "total_count": len(rets), "data": rets})
 
 
 @app.route('/api/v1/stock/query', methods=["GET"])
 def query():
     req_id = generate_id()
-    return jsonify({'msg': "ok", "rid": req_id, "data": []})
+    params = request.args
+    holder_id = params.get("holder_id", None)
+    if holder_id == '0':
+        holder_id = None
+    holders = query_holder(holder_id)
+    hd_stocks = []
+    for hd in holders:
+        hd_stocks.append(query_stock_by_holder(hd))
+
+    total_count = len(hd_stocks)
+    return jsonify({'msg': "ok", "rid": req_id, "total_count": total_count, "data": hd_stocks})
 
 
 @app.route('/api/v1/holder/query', methods=["GET"])
@@ -164,8 +228,10 @@ def holder_query():
     req_id = generate_id()
     params = request.args
     holder_id = params.get("holder_id", None)
+    if holder_id == '0':
+        holder_id = None
     rets = query_holder(holder_id)
-    return jsonify({'msg': "ok", "rid": req_id, "data": rets})
+    return jsonify({'msg': "ok", "rid": req_id, "total_count": len(rets), "data": rets})
 
 
 @app.route('/api/v1/holder/add', methods=["POST"])
@@ -175,7 +241,7 @@ def holder_add():
     holder_name = params["holder_name"]
     holder_id = add_holder(holder_name)
     rets = query_holder(holder_id)
-    return jsonify({'msg': "ok", "rid": req_id, "data": rets})
+    return jsonify({'msg': "ok", "rid": req_id, "total_count": len(rets), "data": rets})
 
 
 def generate_id() -> str:
