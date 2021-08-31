@@ -114,7 +114,7 @@ def create_stock_history(holder_id, stock_code, stock_id, currency):
 
 
 def get_yd_cost(stock_code):
-    url = "https://hq.sinajs.cn/?list={}".format(stock_code.lower())
+    url = "http://49.7.37.132/?list={}".format(stock_code.lower())
     resp = requests.get(url)
     rets = re.findall(r'"([^"]*)"', resp.text)
     ret = rets[0]
