@@ -142,7 +142,7 @@ def update_yd_profit():
         cost = sk['cost']
         trans = sk['trans']
         clearance_profit = sk['clearance_profit']
-        y_profit = ((yd_cost - cost) * trans + clearance_profit) * 10000 / 10000
+        y_profit = int(((yd_cost - cost) * trans + clearance_profit) * 10000) / 10000
         stock_cc.update_one({'_id': sk['_id']},
                             {"$set": {"yesterday_profit": y_profit, "clearance_profit": 0, "yesterday": date_ydt()}})
     return True
