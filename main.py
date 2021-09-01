@@ -52,6 +52,10 @@ def date_dt():
     return datetime.datetime.now().strftime("%Y%m%d")
 
 
+def date_ydt():
+    return (datetime.datetime.now() - datetime.timedelta(days=1)).strftime("%Y%m%d")
+
+
 def date_timestamp():
     return int(datetime.datetime.now().timestamp())
 
@@ -126,6 +130,22 @@ def get_yd_cost(stock_code):
         return format(stock_info[2])
     else:
         return 0
+
+
+def update_yd_profit():
+    client = get_mongo_client()
+    stock_cc = client[MONGO_DATABASE][COLLECTION_STOCK_MARKET]
+    query_ft = {"status": 1}
+    stock = stock_cc.find(query_ft)
+    for sk in stock:
+        yd_cost = get_yd_cost(sk['stock_code'])
+        cost = sk['cost']
+        trans = sk['trans']
+        clearance_profit = sk['clearance_profit']
+        yd_profit = (yd_cost - cost) * trans + clearance_profit
+        stock_cc.update_one({'_id': sk['_id']},
+                            {"$set": {"yesterday_profit": yd_profit, "clearance_profit": 0, "yesterday": date_ydt()}})
+    return True
 
 
 def query_stock_by_holder(holder):
@@ -220,6 +240,13 @@ def query():
 
     total_count = len(hd_stocks)
     return jsonify({'msg': "ok", "rid": req_id, "total_count": total_count, "data": hd_stocks})
+
+
+@app.route('/api/v1/stock/ydp', methods=["GET"])
+def yd_profit():
+    req_id = generate_id()
+    update_yd_profit()
+    return jsonify({'msg': "ok", "rid": req_id, "total_count": 0, "data": []})
 
 
 @app.route('/api/v1/holder/query', methods=["GET"])
