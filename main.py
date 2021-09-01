@@ -127,7 +127,7 @@ def get_yd_cost(stock_code):
     stock_dd = int(stock_info[30].replace('-', ''))
     now_dd = date_dt()
     if stock_dd <= int(now_dd):
-        return format(stock_info[2])
+        return float(stock_info[2])
     else:
         return 0
 
@@ -142,9 +142,9 @@ def update_yd_profit():
         cost = sk['cost']
         trans = sk['trans']
         clearance_profit = sk['clearance_profit']
-        yd_profit = (yd_cost - cost) * trans + clearance_profit
+        y_profit = (yd_cost - cost) * trans + clearance_profit
         stock_cc.update_one({'_id': sk['_id']},
-                            {"$set": {"yesterday_profit": yd_profit, "clearance_profit": 0, "yesterday": date_ydt()}})
+                            {"$set": {"yesterday_profit": y_profit, "clearance_profit": 0, "yesterday": date_ydt()}})
     return True
 
 
